@@ -57,6 +57,6 @@ export function getCodeImg() {
       isToken: false
     },
     method: 'get',
-    timeout: 20000
+    timeout: 20000 // 覆盖全局超时时间
   })
 }

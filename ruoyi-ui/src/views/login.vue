@@ -112,6 +112,7 @@ export default {
       getCodeImg().then(res => {
         this.captchaEnabled = res.captchaEnabled === undefined ? true : res.captchaEnabled;
         if (this.captchaEnabled) {
+          // 这是一个 Data URL 的前缀，它告诉浏览器接下来的内容是一个 GIF 图片，并且使用 Base64 编码
           this.codeUrl = "data:image/gif;base64," + res.img;
           this.loginForm.uuid = res.uuid;
         }
