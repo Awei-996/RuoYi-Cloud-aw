@@ -465,6 +465,7 @@ export default {
     this.getConfigKey("sys.user.initPassword").then(response => {
       this.initPassword = response.msg;
     });
+    this.connectWebsocket();
   },
   methods: {
     /** 查询用户列表 */
@@ -503,6 +504,29 @@ export default {
       }).catch(function() {
         row.status = row.status === "0" ? "1" : "0";
       });
+    },
+    connectWebsocket(){
+      const socket = new WebSocket("ws://localhost:9000/websocket/wangzhuan-test");
+
+      socket.onopen = function(event) {
+        console.log("已连接到 WebSocket 服务器");
+        socket.send("Hello Server");  // 向服务器发送一条消息
+      };
+
+      socket.onmessage = function(event) {
+        console.log("来自服务器的消息:", event.data);
+        // 在这里处理从服务器收到的消息
+      };
+
+      socket.onclose = function(event) {
+        console.log("与 WebSocket 服务器的连接已关闭");
+      };
+
+      socket.onerror = function(error) {
+        console.error("WebSocket 错误:", error);
+        console.error("WebSocket 错误:", error.message);
+        console.error("WebSocket 错误代码:", error.code);
+      };
     },
     // 取消按钮
     cancel() {

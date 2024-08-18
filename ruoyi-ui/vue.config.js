@@ -40,7 +40,12 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
-      }
+      },
+      '/ws': {
+        target: 'http://localhost:9000',  // 指向你的后端 WebSocket 服务器
+        ws: true,                       // 代理 websockets
+        changeOrigin: true,             // 是否需要改变原始主机头为目标URL
+      },
     },
     disableHostCheck: true
   },

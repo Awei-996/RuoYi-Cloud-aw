@@ -56,6 +56,7 @@ import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import RuoYiGit from '@/components/RuoYi/Git'
 import RuoYiDoc from '@/components/RuoYi/Doc'
+import {disconnectWebSocket} from "../../utils/websocket";
 
 export default {
   components: {
@@ -102,6 +103,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('LogOut').then(() => {
+          disconnectWebSocket();
           location.href = '/index';
         })
       }).catch(() => {});
