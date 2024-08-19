@@ -345,6 +345,7 @@ import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUs
 import { getToken } from "@/utils/auth";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import {connectWebSocket, sendMessage} from "../../../utils/websocket";
 
 export default {
   name: "User",
@@ -465,7 +466,8 @@ export default {
     this.getConfigKey("sys.user.initPassword").then(response => {
       this.initPassword = response.msg;
     });
-    this.connectWebsocket();
+    // this.connectWebsocket();
+    connectWebSocket()
   },
   methods: {
     /** 查询用户列表 */
@@ -506,7 +508,7 @@ export default {
       });
     },
     connectWebsocket(){
-      const socket = new WebSocket("ws://localhost:9000/websocket/wangzhuan-test");
+      const socket = new WebSocket("ws://localhost:9000/ws");
 
       socket.onopen = function(event) {
         console.log("已连接到 WebSocket 服务器");
@@ -585,6 +587,7 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
+      sendMessage("/app/hello", "aw")
       this.reset();
       getUser().then(response => {
         this.postOptions = response.posts;

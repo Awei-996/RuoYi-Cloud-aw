@@ -2,6 +2,7 @@
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import {getToken} from "./auth";
+import {Message} from "element-ui";
 
 let stompClient = null;
 
@@ -12,22 +13,22 @@ export function connectWebSocket() {
   }
 
     const socket = new SockJS('/ws');  // 使用 SockJS 建立连接
-    this.stompClient = Stomp.over(socket);
+    stompClient = Stomp.over(socket);
 
-    this.stompClient.connect({}, frame => {
-      console.log('Connected: ' + frame);
-
-      // 订阅服务器推送消息的频道
-      this.stompClient.subscribe('/topic/public', message => {
-        this.$message.info(message.body)
+    stompClient.connect({}, frame => {
+      if (frame?.command == "CONNECTED") {
+        console.log("websocket连接成功")
+      }      // 订阅服务器推送消息的频道
+      stompClient.subscribe('/topic/public', message => {
+        Message.info(message.body)
       });
     });
 
 }
 
 export function sendMessage(destination, message) {
-  if (this.stompClient && this.stompClient.connected) {
-    this.stompClient.send(destination, {}, JSON.stringify(message));
+  if (stompClient && stompClient.connected) {
+    stompClient.send(destination, {}, JSON.stringify(message));
   } else {
     console.error("WebSocket is not connected. Cannot send message.");
   }
