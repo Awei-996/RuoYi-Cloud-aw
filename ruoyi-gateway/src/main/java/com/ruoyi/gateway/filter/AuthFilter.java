@@ -48,6 +48,7 @@ public class AuthFilter implements GlobalFilter, Ordered
         ServerHttpRequest.Builder mutate = request.mutate();
         String url = request.getURI().getPath();
         System.err.println(url);
+        // 用于测试
 //        if ("/test/send-event".equals(url) || "/captcha".equals(url)){
 //            return chain.filter(exchange);
 //        }
