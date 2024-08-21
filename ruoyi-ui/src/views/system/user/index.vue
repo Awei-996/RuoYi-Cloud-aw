@@ -467,7 +467,8 @@ export default {
       this.initPassword = response.msg;
     });
     // this.connectWebsocket();
-    connectWebSocket()
+    // connectWebSocket()
+    this.sse();
   },
   methods: {
     /** 查询用户列表 */
@@ -697,7 +698,19 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
-    }
+    },
+    sse() {
+      console.log(1111111111)
+      const eventSource = new EventSource('http://localhost:9000/sse');
+      console.log("eventSource", eventSource);
+      eventSource.onmessage = function(event) {
+        console.log('Received message:', event.data);
+      };
+
+      eventSource.onerror = function(event) {
+        console.error('Error occurred:', event);
+      };
+    },
   }
 };
 </script>

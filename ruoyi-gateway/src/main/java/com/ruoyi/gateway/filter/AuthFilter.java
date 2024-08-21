@@ -21,6 +21,8 @@ import com.ruoyi.gateway.config.properties.IgnoreWhiteProperties;
 import io.jsonwebtoken.Claims;
 import reactor.core.publisher.Mono;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 网关鉴权
  * 
@@ -44,8 +46,11 @@ public class AuthFilter implements GlobalFilter, Ordered
     {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpRequest.Builder mutate = request.mutate();
-
         String url = request.getURI().getPath();
+        System.err.println(url);
+//        if ("/test/send-event".equals(url) || "/captcha".equals(url)){
+//            return chain.filter(exchange);
+//        }
         // 跳过不需要验证的路径
         if (StringUtils.matches(url, ignoreWhite.getWhites()))
         {
