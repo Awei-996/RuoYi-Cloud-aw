@@ -10,6 +10,10 @@ spring:
   profiles:
     # 环境配置
     active: dev
+  config:
+    import:
+      - optional:nacos:mysql-${spring.profiles.active}.yml
+      - optional:nacos:redis-${spring.profiles.active}.yml
   cloud:
     nacos:
       discovery:
