@@ -41,3 +41,6 @@ spring:
             groupId: DEFAULT_GROUP
             data-type: json
             rule-type: gw-flow
+logging:
+  level:
+    reactor.netty.http.server.HttpServerOperations: ERROR

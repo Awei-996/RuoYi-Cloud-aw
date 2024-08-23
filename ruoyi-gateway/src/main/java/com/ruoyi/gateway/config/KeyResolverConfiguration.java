@@ -2,6 +2,7 @@ package com.ruoyi.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import reactor.core.publisher.Mono;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 
@@ -20,7 +21,8 @@ public class KeyResolverConfiguration {
      *
      * @return
      */
-    @Bean
+    @Primary
+    @Bean(value = "pathKeyResolver")
     public KeyResolver pathKeyResolver() {
         return exchange -> {
             System.err.println("限流路径：" + exchange.getRequest().getURI().getPath());
@@ -33,7 +35,7 @@ public class KeyResolverConfiguration {
      *
      * @return
      */
-    @Bean
+    @Bean(value = "parameterKeyResolver")
     public KeyResolver parameterKeyResolver() {
         return exchange -> Mono.just(exchange.getRequest().getQueryParams().getFirst("userId"));
     }
