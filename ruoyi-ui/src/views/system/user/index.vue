@@ -345,7 +345,7 @@ import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUs
 import { getToken } from "@/utils/auth";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import {connectWebSocket, sendMessage} from "../../../utils/websocket";
+import { sendMessage} from "../../../utils/websocket";
 
 export default {
   name: "User",
