@@ -91,4 +91,9 @@ public class HttpStatus
      * 系统警告消息
      */
     public static final int WARN = 601;
+
+    /**
+     * 黑名单
+     */
+    public static final int BLACKLIST = 429;
 }

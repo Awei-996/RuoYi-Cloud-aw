@@ -1,5 +1,6 @@
 package com.ruoyi.gateway.filter;
 
+import com.ruoyi.gateway.config.properties.BlackIpProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
 import com.ruoyi.common.core.constant.CacheConstants;
 import com.ruoyi.common.core.constant.HttpStatus;
@@ -22,15 +24,16 @@ import io.jsonwebtoken.Claims;
 import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * 网关鉴权
- * 
+ *
  * @author ruoyi
  */
 @Component
-public class AuthFilter implements GlobalFilter, Ordered
-{
+public class AuthFilter implements GlobalFilter, Ordered {
     private static final Logger log = LoggerFactory.getLogger(AuthFilter.class);
 
     // 排除过滤的 uri 地址，nacos自行添加
@@ -38,12 +41,16 @@ public class AuthFilter implements GlobalFilter, Ordered
     private IgnoreWhiteProperties ignoreWhite;
 
     @Autowired
+    private BlackIpProperties blackIpProperties;
+
+    @Autowired
     private RedisService redisService;
+
+    private final String BLACK_SET_KEY = "gateway:blackSet";
 
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain)
-    {
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpRequest.Builder mutate = request.mutate();
         String url = request.getURI().getPath();
@@ -52,31 +59,41 @@ public class AuthFilter implements GlobalFilter, Ordered
 //        if ("/test/send-event".equals(url) || "/captcha".equals(url)){
 //            return chain.filter(exchange);
 //        }
+        // 过滤
+        if (blackIpProperties.getEnabled()) {
+            String hostString = Objects.requireNonNull(exchange.getRequest().getRemoteAddress()).getHostString();
+            System.err.println("hostString:" + hostString);
+            // 先从配置文件判断
+            if (!CollectionUtils.isEmpty(blackIpProperties.getBlackIpSet()) && blackIpProperties.getBlackIpSet().contains(hostString)) {
+                return ServletUtils.webFluxResponseWriter(exchange.getResponse(), "IP地址被拉黑", HttpStatus.BLACKLIST);
+            }
+            // 再从缓存判断
+            Set<String> cacheSet = redisService.getCacheSet(BLACK_SET_KEY);
+            if (!CollectionUtils.isEmpty(cacheSet) && cacheSet.contains(hostString)) {
+                return ServletUtils.webFluxResponseWriter(exchange.getResponse(), "IP地址被拉黑", HttpStatus.BLACKLIST);
+            }
+        }
+
         // 跳过不需要验证的路径
-        if (StringUtils.matches(url, ignoreWhite.getWhites()))
-        {
+        if (StringUtils.matches(url, ignoreWhite.getWhites())) {
             return chain.filter(exchange);
         }
         String token = getToken(request);
-        if (StringUtils.isEmpty(token))
-        {
+        if (StringUtils.isEmpty(token)) {
             return unauthorizedResponse(exchange, "令牌不能为空");
         }
         Claims claims = JwtUtils.parseToken(token);
-        if (claims == null)
-        {
+        if (claims == null) {
             return unauthorizedResponse(exchange, "令牌已过期或验证不正确！");
         }
         String userkey = JwtUtils.getUserKey(claims);
         boolean islogin = redisService.hasKey(getTokenKey(userkey));
-        if (!islogin)
-        {
+        if (!islogin) {
             return unauthorizedResponse(exchange, "登录状态已过期");
         }
         String userid = JwtUtils.getUserId(claims);
         String username = JwtUtils.getUserName(claims);
-        if (StringUtils.isEmpty(userid) || StringUtils.isEmpty(username))
-        {
+        if (StringUtils.isEmpty(userid) || StringUtils.isEmpty(username)) {
             return unauthorizedResponse(exchange, "令牌验证失败");
         }
 
@@ -89,10 +106,8 @@ public class AuthFilter implements GlobalFilter, Ordered
         return chain.filter(exchange.mutate().request(mutate.build()).build());
     }
 
-    private void addHeader(ServerHttpRequest.Builder mutate, String name, Object value)
-    {
-        if (value == null)
-        {
+    private void addHeader(ServerHttpRequest.Builder mutate, String name, Object value) {
+        if (value == null) {
             return;
         }
         String valueStr = value.toString();
@@ -100,13 +115,11 @@ public class AuthFilter implements GlobalFilter, Ordered
         mutate.header(name, valueEncode);
     }
 
-    private void removeHeader(ServerHttpRequest.Builder mutate, String name)
-    {
+    private void removeHeader(ServerHttpRequest.Builder mutate, String name) {
         mutate.headers(httpHeaders -> httpHeaders.remove(name)).build();
     }
 
-    private Mono<Void> unauthorizedResponse(ServerWebExchange exchange, String msg)
-    {
+    private Mono<Void> unauthorizedResponse(ServerWebExchange exchange, String msg) {
         log.error("[鉴权异常处理]请求路径:{}", exchange.getRequest().getPath());
         return ServletUtils.webFluxResponseWriter(exchange.getResponse(), msg, HttpStatus.UNAUTHORIZED);
     }
@@ -114,28 +127,24 @@ public class AuthFilter implements GlobalFilter, Ordered
     /**
      * 获取缓存key
      */
-    private String getTokenKey(String token)
-    {
+    private String getTokenKey(String token) {
         return CacheConstants.LOGIN_TOKEN_KEY + token;
     }
 
     /**
      * 获取请求token
      */
-    private String getToken(ServerHttpRequest request)
-    {
+    private String getToken(ServerHttpRequest request) {
         String token = request.getHeaders().getFirst(TokenConstants.AUTHENTICATION);
         // 如果前端设置了令牌前缀，则裁剪掉前缀
-        if (StringUtils.isNotEmpty(token) && token.startsWith(TokenConstants.PREFIX))
-        {
+        if (StringUtils.isNotEmpty(token) && token.startsWith(TokenConstants.PREFIX)) {
             token = token.replaceFirst(TokenConstants.PREFIX, StringUtils.EMPTY);
         }
         return token;
     }
 
     @Override
-    public int getOrder()
-    {
+    public int getOrder() {
         return -200;
     }
 }

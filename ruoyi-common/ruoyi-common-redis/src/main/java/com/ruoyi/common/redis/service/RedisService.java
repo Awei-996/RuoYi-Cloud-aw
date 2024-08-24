@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
@@ -171,6 +173,20 @@ public class RedisService
         return setOperation;
     }
 
+    /**
+     * Set中添加元素
+     */
+    public Long addCacheSet(final String key, final String value){
+        return redisTemplate.opsForSet().add(key, value);
+    }
+
+    /**
+     * 判断当前元素是否在Set中
+     */
+    public Boolean isMemberCacheSet(final String key, final T value){
+        return redisTemplate.opsForSet().isMember(key, value);
+
+    }
     /**
      * 获得缓存的set
      *
