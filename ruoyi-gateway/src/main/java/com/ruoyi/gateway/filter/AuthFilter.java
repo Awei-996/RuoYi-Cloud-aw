@@ -74,6 +74,12 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
         }
 
+        // 测试获取路由元数据
+//        Route route = exchange.getAttribute(GATEWAY_ROUTE_ATTR);
+//        assert route != null;
+//        Map<String, Object> metadata = route.getMetadata();
+//        System.err.println("metadata:" + metadata);
+//        System.err.println("metadata:" + metadata.get("optionName"));
         // 跳过不需要验证的路径
         if (StringUtils.matches(url, ignoreWhite.getWhites())) {
             return chain.filter(exchange);

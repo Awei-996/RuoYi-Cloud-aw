@@ -2,6 +2,8 @@ package com.ruoyi.system.api;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +17,7 @@ import com.ruoyi.system.api.factory.RemoteFileFallbackFactory;
  * 
  * @author ruoyi
  */
-@FeignClient(contextId = "remoteFileService", value = ServiceNameConstants.FILE_SERVICE, fallbackFactory = RemoteFileFallbackFactory.class)
+@FeignClient(contextId = "remoteFileService", value = "${feign.name}", fallbackFactory = RemoteFileFallbackFactory.class)
 public interface RemoteFileService
 {
     /**
@@ -26,4 +28,12 @@ public interface RemoteFileService
      */
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public R<SysFile> upload(@RequestPart(value = "file") MultipartFile file);
+
+    /**
+     * 测试
+     * @param name
+     * @return
+     */
+    @GetMapping("t1/{name}")
+    public String t1(@PathVariable("name") String name);
 }
