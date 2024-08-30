@@ -26,6 +26,21 @@ public class RemoteFileFallbackFactory implements FallbackFactory<RemoteFileServ
         return new RemoteFileService()
         {
             @Override
+            public SysFile getById(Long id) {
+                return null;
+            }
+
+            @Override
+            public SysFile create(SysFile entity) {
+                return null;
+            }
+
+            @Override
+            public void deleteById(Long id) {
+
+            }
+
+            @Override
             public R<SysFile> upload(MultipartFile file)
             {
                 return R.fail("上传文件失败:" + throwable.getMessage());

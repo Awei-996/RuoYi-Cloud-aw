@@ -31,3 +31,10 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 feign:
   name: ruoyi-file
+#  client:
+#    config:
+#      ruoyi-system:
+#        loggerLevel: FULL
+#logging:
+#  level:
+#    com.ruoyi.system.api.RemoteFileService: DEBUG

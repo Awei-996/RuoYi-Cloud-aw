@@ -1,3 +1,4 @@
-com.ruoyi.system.api.factory.RemoteUserFallbackFactory
-com.ruoyi.system.api.factory.RemoteLogFallbackFactory
-com.ruoyi.system.api.factory.RemoteFileFallbackFactory
+# 无需自动装配，@Component 会自动注入bean
+#com.ruoyi.system.api.factory.RemoteUserFallbackFactory
+#com.ruoyi.system.api.factory.RemoteLogFallbackFactory
+#com.ruoyi.system.api.factory.RemoteFileFallbackFactory

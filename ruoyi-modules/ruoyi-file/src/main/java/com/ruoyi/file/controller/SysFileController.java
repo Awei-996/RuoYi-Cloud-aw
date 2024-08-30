@@ -50,6 +50,7 @@ public class SysFileController
 
     @GetMapping("t1/{name}")
     public String t1(@PathVariable("name") String name){
+        int a = 1/0;
         return name;
     }
 }
