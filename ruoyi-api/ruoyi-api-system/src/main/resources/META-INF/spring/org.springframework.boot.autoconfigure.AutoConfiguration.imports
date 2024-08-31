@@ -1,4 +1,4 @@
-# 无需自动装配，@Component 会自动注入bean
-#com.ruoyi.system.api.factory.RemoteUserFallbackFactory
-#com.ruoyi.system.api.factory.RemoteLogFallbackFactory
-#com.ruoyi.system.api.factory.RemoteFileFallbackFactory
+# 需要自动装配，注入bean否则引用的模块扫描不到
+com.ruoyi.system.api.factory.RemoteUserFallbackFactory
+com.ruoyi.system.api.factory.RemoteLogFallbackFactory
+com.ruoyi.system.api.factory.RemoteFileFallbackFactory
