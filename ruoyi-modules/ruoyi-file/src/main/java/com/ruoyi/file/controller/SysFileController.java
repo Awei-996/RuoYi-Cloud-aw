@@ -1,5 +1,6 @@
 package com.ruoyi.file.controller;
 
+import com.ruoyi.common.security.annotation.InnerAuth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +49,15 @@ public class SysFileController
         }
     }
 
+    @InnerAuth
     @GetMapping("t1/{name}")
     public String t1(@PathVariable("name") String name){
-        int a = 1/0;
+//        int a = 1/0;
         return name;
+    }
+    @GetMapping("t2")
+    public String t2(){
+//        int a = 1/0;
+        return "t2";
     }
 }

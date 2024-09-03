@@ -1,10 +1,12 @@
 package com.ruoyi.system.api;
 
+import com.ruoyi.common.core.constant.SecurityConstants;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.core.constant.ServiceNameConstants;
@@ -29,11 +31,12 @@ public interface RemoteFileService extends BaseFeignClient<SysFile>
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public R<SysFile> upload(@RequestPart(value = "file") MultipartFile file);
 
-    /**
-     * 测试
+
+    /** 测试feign内部调用
      * @param name
+     * @param source
      * @return
      */
     @GetMapping("t1/{name}")
-    public String t1(@PathVariable("name") String name);
+    public String t1(@PathVariable("name") String name,@RequestHeader(SecurityConstants.FROM_SOURCE) String source);
 }

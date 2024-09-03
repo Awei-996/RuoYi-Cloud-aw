@@ -47,9 +47,10 @@ public class RemoteFileFallbackFactory implements FallbackFactory<RemoteFileServ
             }
 
             @Override
-            public String t1(String name) {
-                return "请求错误";
+            public String t1(String name, String source) {
+                return null;
             }
+
         };
     }
 }

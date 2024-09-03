@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import com.ruoyi.common.core.constant.SecurityConstants;
 import com.ruoyi.system.api.RemoteFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,6 @@ public class TestFeignController {
     private RemoteFileService remoteFileService;
     @GetMapping("/test")
     public String test() {
-        return remoteFileService.t1("aw");
+        return remoteFileService.t1("aw", SecurityConstants.INNER);
     }
 }

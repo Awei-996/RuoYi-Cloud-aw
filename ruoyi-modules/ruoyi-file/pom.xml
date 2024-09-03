@@ -54,18 +54,22 @@
             <version>${minio.version}</version>
         </dependency>
         
-        <!-- RuoYi Api System -->
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-api-system</artifactId>
-        </dependency>
+        <!-- RuoYi Api System  ruoyi-common-security依赖中存在-->
+<!--        <dependency>-->
+<!--            <groupId>com.ruoyi</groupId>-->
+<!--            <artifactId>ruoyi-api-system</artifactId>-->
+<!--        </dependency>-->
         
         <!-- RuoYi Common Swagger -->
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common-swagger</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-common-security</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
