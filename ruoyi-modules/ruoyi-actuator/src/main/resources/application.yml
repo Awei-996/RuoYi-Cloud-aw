@@ -1,0 +1,31 @@
+server:
+  port: 8888
+management:
+  #  endpoints:
+  #    web:
+  #      base-path: /actuator  #默认为 /actuator
+  endpoints:
+    web:
+      discovery:
+        enabled: false
+      exposure:
+        include:
+          - shutdown
+          - info
+          - health
+          - customEndpoint
+          - myActuator
+          - metrics
+          - prometheus
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+    prometheus:
+      enabled: true
+    shutdown:
+      enabled: true
+
+info:
+  appName: spring-boot-actuator-endpoint-info
+  version: 2.0.0
